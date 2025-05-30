@@ -1,0 +1,232 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	xmlns:float="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" type="text/css" href="/easyui/themes/default/easyui.css" />
+	<link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css" />
+	<link rel="stylesheet" type="text/css" href="/easyui/demo/demo.css" />
+	<script type="text/javascript" src="/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/easyui/easyui-lang-jp.js"></script>
+</head>
+<style>
+	.datagrid-btable {
+		width: 100%;
+	}
+
+	.datagrid-header-inner {
+		width: 100%;
+	}
+
+	.datagrid-header {
+		width: 100%;
+	}
+
+	.datagrid-htable {
+		width: 100%;
+	}
+
+	.datagrid-cell {
+		margin: auto;
+	}
+
+	.fitem {
+		text-align: right
+	}
+
+	.ftitle {
+		text-align: center
+	}
+</style>
+
+<body>
+	<div class="easyui-layout" data-options="fit:true">
+		<div data-options="region:'north'" style="width: 100%;height: 9%">
+		</div>
+
+		<div data-options="region:'center',title:'ユーザーリスト'">
+			<table id="datagrid" class="easyui-datagrid" style="width:100%;height:100%;" url="/user/userinforlist"
+				toolbar="#dgtoolbar" pagination="true" pageSize="25" pageList="[25,15,10]" rownumbers="false"
+				fitColumns="true" singleSelect="true">
+				<thead>
+					<tr>
+						<th data-options="field:'userid',align:'center',width:'9%'">ユーザーID</th>
+						<th data-options="field:'username',align:'center',width:'9%'">名前</th>
+						<th data-options="field:'password',align:'center',width:'9%'">パスワード</th>
+						<th data-options="field:'phone',align:'center',width:'11%'">電話番号</th>
+						<th data-options="field:'no',align:'center',width:'0%',hidden:true"></th>
+					</tr>
+				</thead>
+			</table>
+			<div id="dgtoolbar">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addInfo()">追加</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="deleteInfo()">削除</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="modifyInfo()">変更</a>
+			</div>
+		</div>
+	</div>
+
+	<div id="modifydg" class="easyui-dialog" style="width:400px;height:220px;padding:10px 20px" closed="true"
+		buttons="#modifydg-buttons">
+		<div class="ftitle">ユーザー情報</div>
+		<form id="fim" method="post">
+			<div class="fitem">
+				<label>名前:</label>
+				<input name="username" class="easyui-validatebox" required="true" />
+			</div>
+			<div class="fitem">
+				<label>パスワード:</label>
+				<input name="password" class="easyui-validatebox" required="true" />
+			</div>
+			<div class="fitem">
+				<label>電話番号:</label>
+				<input name="phone" class="easyui-validatebox" required="true" />
+			</div>
+			<input type="hidden" name="no"/>
+		</form>
+	</div>
+	<div id="modifydg-buttons">
+		<a href="#" class="easyui-linkbutton" onclick="update()">変更</a>
+		<a href="#" class="easyui-linkbutton" onclick="javascript:$('#modifydg').dialog('close')">キャンセル</a>
+	</div>
+
+	<div id="adddg" class="easyui-dialog" style="width:400px;height:240px;padding:10px 20px" closed="true"
+		buttons="#adddg-buttons">
+		<div class="ftitle">ユーザー情報</div>
+		<form id="fam" method="post">
+			<div class="fitem">
+				<label>ユーザーID:</label>
+				<input name="userid" class="easyui-validatebox" required="true" />
+			</div>
+			<div class="fitem">
+				<label>名前:</label>
+				<input name="username" class="easyui-validatebox" required="true" />
+			</div>
+			<div class="fitem">
+				<label>パスワード:</label>
+				<input name="password" class="easyui-validatebox" required="true" />
+			</div>
+			<div class="fitem">
+				<label>電話番号:</label>
+				<input name="phone" class="easyui-validatebox" required="true" />
+			</div>
+		</form>
+	</div>
+	<div id="adddg-buttons">
+		<a href="#" class="easyui-linkbutton" onclick="add()">追加</a>
+		<a href="#" class="easyui-linkbutton" onclick="javascript:$('#adddg').dialog('close')">キャンセル</a>
+	</div>
+
+	<script>
+		// 新しいユーザーを追加
+		function addInfo(){
+		    // ユーザー追加ダイアログ
+		    $('#adddg').dialog('open').dialog('setTitle', 'ユーザーを追加');
+		    // データをクリア
+		    $('#fam').form('clear');
+		}
+
+		// ユーザー情報の編集
+		function modifyInfo(){
+		    // 行を選択
+		    var row = $('#datagrid').datagrid('getSelected');
+		    if (row){
+		        $('#modifydg').dialog('open').dialog('setTitle', '情報を変更');
+		        // 変更前のユーザー情報を表示
+		        $('#fim').form('load', row);
+		    }
+		}
+
+		// 情報保存ボタンのイベント
+		function update(){
+		    var row = $('#datagrid').datagrid('getSelected');
+		    var add;
+		    if(row == null){
+		        add = "/user/update?no=0";
+		    } else {
+		        add = "/user/update?no=" + row.no;
+		    }
+
+		    $('#fim').form('submit', {
+		        url: add,
+		        onSubmit: function(){
+		            return $(this).form('validate');
+		        },
+		        success: function(result){
+		            var result = eval('(' + result + ')');
+		            if (result.success){
+		                $('#modifydg').dialog('close');		// ダイアログを閉じる
+		                $('#datagrid').datagrid('reload');	// ユーザーデータを再読み込み
+		                $.messager.show({
+		                    title: '成功',
+		                    msg: '保存が成功しました'
+		                });
+		            } else {
+		                $.messager.show({
+		                    title: 'エラー',
+		                    msg: result.msg
+		                });
+		            }
+		        }
+		    });
+		}
+
+		// ユーザー情報追加ボタンのイベント
+		function add(){
+		    var add = "/user/add";
+		    $('#fam').form('submit', {
+		        url: add,
+		        onSubmit: function(){
+		            return $(this).form('validate');
+		        },
+		        success: function(result){
+		            var result = eval('(' + result + ')');
+		            if (result.success){
+		                $('#adddg').dialog('close');		// ダイアログを閉じる
+		                $('#datagrid').datagrid('reload');	// ユーザーデータを再読み込み
+		                $.messager.show({
+		                    title: '成功',
+		                    msg: '追加が成功しました'
+		                });
+		            } else {
+		                $.messager.show({
+		                    title: 'エラー',
+		                    msg: result.msg
+		                });
+		            }
+		        }
+		    });
+		}
+
+		// ユーザー削除ボタンのイベント
+		function deleteInfo(){
+		    var row = $('#datagrid').datagrid('getSelected');
+
+		    if (row){
+		        $.messager.confirm('確認', 'このユーザーを削除してもよろしいですか?', function(r){
+		            if (r){
+		                $.post('/user/delete', {no: row.no}, function(result){
+		                    if (result.success){
+		                        $('#datagrid').datagrid('reload');	// ユーザーデータを再読み込み
+		                        $.messager.show({
+		                            title: '成功',
+		                            msg: '削除が成功しました'
+		                        });
+		                    } else {
+		                        $.messager.show({	// エラーメッセージを表示
+		                            title: 'エラー',
+		                            msg: result.msg
+		                        });
+		                    }
+		                }, 'json');
+		            }
+		        });
+		    }
+		}
+	</script>
+</body>
+
+</html>

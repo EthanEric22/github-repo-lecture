@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<!-- データベースドライバ: ローカルハードディスク上のデータベースドライバパッケージを選択してください -->
+	<classPathEntry
+		location="C:\Users\Administrator\.m2\repository\com\mysql\mysql-connector-j\8.0.33\mysql-connector-j-8.0.33.jar" />
+	<context id="MySQLContext" targetRuntime="MyBatis3"
+		defaultModelType="flat">
+		<commentGenerator>
+			<property name="suppressDate" value="true" />
+			<!-- 自動生成されるコメントを除去するかどうか true: はい、 false: いいえ -->
+			<property name="suppressAllComments" value="false" />
+		</commentGenerator>
+		<!-- データベース接続URL、ユーザー名、パスワード -->
+		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/testdb" userId="testuser"
+			password="test">
+		</jdbcConnection>
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		<!-- モデルのパッケージ名と位置 -->
+		<javaModelGenerator
+			targetPackage="com.kyh.system.model" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<!-- マッピングファイルのパッケージ名と位置 -->
+		<sqlMapGenerator targetPackage="mapper"
+			targetProject="src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+		<!-- DAOのパッケージ名と位置 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.kyh.system.mapper" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+		<!-- 生成するテーブル tableNameはデータベース内のテーブル名またはビュー名、domainObjectNameはエンティティクラス名 -->
+		<table tableName="t_user" domainObjectName="User">
+			<generatedKey column="no" sqlStatement="JDBC"
+				identity="true" />
+		</table>
+	</context>
+</generatorConfiguration>

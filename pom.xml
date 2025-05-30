@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- プロジェクトの基本情報 -->
+	<groupId>com.example</groupId>  <!-- グループID（通常はドメイン名を逆にしたもの） -->
+	<artifactId>springboot-mybatis-demo</artifactId>  <!-- アーティファクトID（プロジェクト名） -->
+	<version>0.0.1-SNAPSHOT</version>  <!-- プロジェクトのバージョン -->
+	<packaging>jar</packaging>  <!-- パッケージの形式（JARファイル） -->
+
+	<name>springboot-mybatis-demo</name>  <!-- プロジェクト名 -->
+	<description>Spring Boot + MyBatis Demo</description>  <!-- プロジェクトの簡単な説明 -->
+
+	<!-- Spring Boot の親 POM を指定 -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>  <!-- Spring Boot
+		のスタートパーレント -->
+		<version>2.7.18</version>  <!-- 使用する Spring Boot のバージョン -->
+		<relativePath /> <!-- 親 POM をリポジトリから自動的に検索 -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  <!--
+		ソースコードの文字エンコーディング -->
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>  <!--
+		レポート出力の文字エンコーディング -->
+		<java.version>1.8</java.version>  <!-- 使用する Java のバージョン -->
+	</properties>
+
+	<dependencies>
+		<!-- Spring Boot の Web スターター（Web アプリケーションの開発に必要な依存関係） -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Spring Boot の JDBC スターター（データベース接続のための依存関係） -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+		<!-- MyBatis の Spring Boot スターター（MyBatis の Spring Boot 統合） -->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.2.0</version>  <!-- MyBatis のバージョンを指定 -->
+		</dependency>
+
+		<!-- MySQL の JDBC ドライバ（MySQL データベースに接続するためのドライバ） -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version>  <!-- 使用する MySQL ドライバのバージョン -->
+		</dependency>
+
+		<!-- Spring Boot の Thymeleaf スターター（Thymeleaf テンプレートエンジンを使ったビューのレンダリング） -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
+		<!-- PageHelper の Spring Boot スターター（MyBatis でのページネーションを簡単に実装） -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<version>1.4.6</version>  <!-- PageHelper のバージョン -->
+		</dependency>
+
+		<!-- Spring Boot の DevTools（開発中のホットデプロイなどをサポートする） -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>development</scope>  <!-- 開発環境専用 -->
+		</dependency>
+
+		<!-- MySQLのスキーマからモデルやマッパーを自動生成 -->
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
+			<version>1.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Spring Boot Maven プラグイン（アプリケーションをJARファイルとしてパッケージングするために使用） -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.3.7</version>
+				<executions>
+					<execution>
+						<phase>generate</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

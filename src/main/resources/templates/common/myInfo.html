@@ -1,0 +1,92 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	xmlns:float="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" type="text/css" href="/easyui/themes/default/easyui.css" />
+	<link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css" />
+	<link rel="stylesheet" type="text/css" href="/easyui/demo/demo.css" />
+	<link rel="stylesheet" href="/css/base.css" />
+	<link rel="stylesheet" type="text/css" href="/css/jquery.dialog.css" />
+</head>
+
+<body>
+
+	<div classs="dialog-content">
+		<div class="ui-dialog-text panel window panel-htop"
+			style="height: 300px;width: 570px;margin-left:30%;margin-top:10%">
+			<table align="center" width="280px" style="height: 320px; text-align:center;margin: auto;">
+				<tr>
+					<td colspan="2" style="font-size: 20px; text-align: center;">
+						<div class="ftitle">個人情報変更</div>
+					</td>
+				</tr>
+				<tr>
+					<td><input type="hidden" id="hiddenNo" th:value="${user.no}"></input></td>
+				</tr>
+				<tr>
+					<td>名前:</td>
+					<td><input type="text" id="username" th:value="${user.username}"></input></td>
+				</tr>
+				<tr>
+					<td>電話番号：</td>
+					<td><input type="tel" id="phone" th:value="${user.phone}"></input></td>
+				</tr>
+				<tr>
+					<td style="text-align:center;" colspan="2">
+						<input type="button" class="button long2 ok" value="確定" align="center"
+							onclick="updateMyInfo()" />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/js/jquery.js"></script>
+	<script type="text/javascript" src="/js/common.js"></script>
+	<script type="text/javascript" src="/js/core.js"></script>
+	<script type="text/javascript" src="/js/jquery.dialog.js"></script>
+	<script type="text/javascript" src="/js/index.js"></script>
+	<script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+	<script>
+		function updateMyInfo() {
+
+			// バリエーションチェックを行います。
+			var phone = $('#phone').val();
+			var pattern = /^\d{3}-\d{4}-\d{4}$/;
+
+			if (!pattern.test(phone)) {
+				$.messager.show({
+					title: 'エラー',
+					msg: '電話番号はXXX-XXXX-XXXXの形式で入力してください。'
+				});
+				return;  // フォーム送信を中止
+			}
+
+
+			$.post('/user/updateMyInfo',
+				{
+					no: $('#hiddenNo').val(),
+					username: $('#username').val(),
+					phone: $('#phone').val()
+				},
+				function (result) {
+					if (result.success) {
+						$.messager.show({
+							title: '成功',
+							msg: '個人情報が変更しました。'
+						});
+					} else {
+						$.messager.show({
+							title: '失敗',
+							msg: '個人情報に失敗しました。'
+						});
+					}
+				}, 'json');
+		}
+	</script>
+</body>
+
+</html>

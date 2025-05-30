@@ -1,0 +1,64 @@
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+xmlns:float="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ユーザー情報管理システム</title>
+    <link href="/css/login.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/js/jquery-1.10.1.js"></script>
+</head>
+<script>
+    //ログインイベント
+    function login(){
+            $("#message").html("ログインしています");
+            var id=$("#userid").val();
+            var password=$("#password").val();
+            if(!id){
+                $("#message").html("ユーザー名を入力してください！");
+                return false;
+            }
+            else if(!password){
+                $("#message").html("パスワードを入力してください！");
+                return false;
+            }else{
+                $("#loginFrom").submit();
+            }
+        }
+</script>
+<body>
+<div class="second_body">
+    <form id="loginFrom" action="userLogin" method="post">
+        <div class="logo"></div>
+        <div class="title-jp">ユーザー情報管理システム</div>
+        <div class="title-en" style="">User Information Management System</div>
+        <div class="message" data-bind="html:message"></div>
+        <table border="0" style="width:300px;">
+            <tr>
+                <td style="white-space:nowrap; padding-bottom: 5px;width:55px;font-size:10px">ユーザーID：</td>
+                <td colspan="2"><input type="text"  name="userid" id="userid" class="login" data-bind="value:form.userid" /></td>
+            </tr>
+            <tr>
+                <td class="lable" style="white-space:nowrap; letter-spacing: 0.5em; vertical-align: middle;font-size:10px">パスワード：</td>
+                <td colspan="2"><input type="password"  name="password" id="password" class="login" data-bind="value:form.password" /></td>
+            </tr>
+
+            <tr>
+                <td colspan="3" style="height:27px">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align:left">
+                    <input type="button" value="ログイン" class="login_button" onclick="login()" style="font-size: small;"/>
+                    <input type="button" value="クリア" class="reset_botton" onclick="reset()" style="font-size: small;"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align:left">
+                    <span style="color: red;" id="message" th:text="${MSG}"></span>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
