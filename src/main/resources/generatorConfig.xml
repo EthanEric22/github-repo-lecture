@@ -4,8 +4,7 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
 	<!-- データベースドライバ: ローカルハードディスク上のデータベースドライバパッケージを選択してください -->
-	<classPathEntry
-		location="C:\Users\Administrator\.m2\repository\com\mysql\mysql-connector-j\8.0.33\mysql-connector-j-8.0.33.jar" />
+	<classPathEntry location="C:\Users\ryu00\.m2\repository\org\postgresql\postgresql\42.7.3\postgresql-42.7.3.jar" />
 	<context id="MySQLContext" targetRuntime="MyBatis3"
 		defaultModelType="flat">
 		<commentGenerator>
@@ -14,10 +13,11 @@
 			<property name="suppressAllComments" value="false" />
 		</commentGenerator>
 		<!-- データベース接続URL、ユーザー名、パスワード -->
-		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/testdb" userId="testuser"
-			password="test">
-		</jdbcConnection>
+		<jdbcConnection driverClass="org.postgresql.Driver"
+                        connectionURL="jdbc:postgresql://localhost:5432/postgres?nullCatalogMeansCurrent=true"
+                        userId="postgres"
+                        password="postgres">
+        </jdbcConnection>
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
@@ -38,8 +38,8 @@
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!-- 生成するテーブル tableNameはデータベース内のテーブル名またはビュー名、domainObjectNameはエンティティクラス名 -->
-		<table tableName="t_user" domainObjectName="User">
-			<generatedKey column="no" sqlStatement="JDBC"
+		<table tableName="syain_main" domainObjectName="Syain">
+			<generatedKey column="syain_id" sqlStatement="PostgreSQL"
 				identity="true" />
 		</table>
 	</context>
