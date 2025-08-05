@@ -108,6 +108,21 @@ public class UserControllerTest {
         ));
         verify(session).setAttribute(eq("user"), eq(refreshed));
     }
+    
+    @Test
+    void updateMyInfo_whenExceptionThrown_returnsEmptyMap() {
+        HttpSession session = mock(HttpSession.class);
+
+        // mock userService.update(...) to throw exception
+        doThrow(new RuntimeException("DB error")).when(userService).update(any(User.class));
+
+        Map<String, String> result = userController.updateMyInfo(42, "名前", "080", session);
+
+        // 성공 메시지는 넣지 않아야 함
+        assertFalse(result.containsKey("success"));
+        verify(userService).update(any(User.class));
+        verify(session, never()).setAttribute(eq("user"), any());
+    }
 
     /* =========================================================
      *  // ユーザー情報の追加
@@ -125,6 +140,23 @@ public class UserControllerTest {
 
     @Test
     void saveUsers_whenNew_insertsAndSuccessTrue() {
+        HttpSession session = mock(HttpSession.class);
+        when(userService.checkExistenceByUserId(any(User.class))).thenReturn(0);
+        when(userService.insert(any(User.class))).thenReturn(1);
+
+        Map<String, String> map = userController.saveUsers("bob", "Bob", "pw", "080", session);
+
+        assertEquals("true", map.get("success"));
+        verify(userService).insert(argThat(u ->
+                "bob".equals(u.getUserid()) &&
+                "Bob".equals(u.getUsername()) &&
+                "pw".equals(u.getPassword()) &&
+                "080".equals(u.getPhone())
+        ));
+    }
+    
+    @Test
+    void saveUsers_whenNew_insertsAndSuccessThrow() {
         HttpSession session = mock(HttpSession.class);
         when(userService.checkExistenceByUserId(any(User.class))).thenReturn(0);
         when(userService.insert(any(User.class))).thenReturn(1);

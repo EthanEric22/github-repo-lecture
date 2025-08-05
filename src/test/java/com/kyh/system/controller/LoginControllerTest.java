@@ -10,72 +10,158 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kyh.system.model.User;
 import com.kyh.system.service.UserService;
 
-class LoginControllerTest {
+public class LoginControllerTest {
 
-    @InjectMocks
     private LoginController loginController;
-
-    @Mock
     private UserService userService;
 
-    @Mock
     private HttpServletRequest request;
-
-    @Mock
     private HttpServletResponse response;
-
-    @Mock
     private HttpSession session;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    public void setUp() {
+        userService = mock(UserService.class);
+        loginController = new LoginController();
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+        session = mock(HttpSession.class);
+        // リフレクションでUserServiceをセットする
+        try {
+            java.lang.reflect.Field field = LoginController.class.getDeclaredField("userService");
+            field.setAccessible(true);
+            field.set(loginController, userService);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    // 1. 正常なログイン
     @Test
-    void testUserLoginSuccess() {
-        // given
-        String userid = "admin";
-        String password = "adminpass";
-
-        when(request.getParameter("userid")).thenReturn(userid);
-        when(request.getParameter("password")).thenReturn(password);
-
+    public void testLogin_successful() {
+        when(request.getParameter("userid")).thenReturn("testuser");
+        when(request.getParameter("password")).thenReturn("password123");
         User user = new User();
-        user.setUserid(userid);
-        user.setPassword(password);
-
         when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(user);
 
-        // when
-        ModelAndView modelAndView = loginController.userLogin(request, response, session);
+        ModelAndView mv = loginController.userLogin(request, response, session);
 
-        // then
-        assertEquals("login/index", modelAndView.getViewName());
+        assertEquals("login/index", mv.getViewName());
         verify(session).setAttribute("user", user);
     }
 
+    // 2. パスワード未入力
     @Test
-    void testUserLoginFailure() {
-        // given
-        when(request.getParameter("userid")).thenReturn("wrong");
-        when(request.getParameter("password")).thenReturn("wrongpass");
-
+    public void testLogin_emptyPassword() {
+        when(request.getParameter("userid")).thenReturn("testuser");
+        when(request.getParameter("password")).thenReturn("");
         when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
 
-        // when
-        ModelAndView modelAndView = loginController.userLogin(request, response, session);
+        ModelAndView mv = loginController.userLogin(request, response, session);
 
-        // then
-        assertEquals("/login/login", modelAndView.getViewName());
-        assertEquals("ユーザー名またはパスワードが間違っています", modelAndView.getModel().get("MSG"));
+        assertEquals("/login/login", mv.getViewName());
+        assertEquals("ユーザー名またはパスワードが間違っています", mv.getModel().get("MSG"));
+        verify(session, never()).setAttribute(eq("user"), any());
+    }
+
+    // 3. パスワードnull
+    @Test
+    public void testLogin_nullPassword() {
+        when(request.getParameter("userid")).thenReturn("testuser");
+        when(request.getParameter("password")).thenReturn(null);
+        when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
+
+        ModelAndView mv = loginController.userLogin(request, response, session);
+
+        assertEquals("/login/login", mv.getViewName());
+    }
+
+    // 4. ユーザーID未入力
+    @Test
+    public void testLogin_emptyUserId() {
+        when(request.getParameter("userid")).thenReturn("");
+        when(request.getParameter("password")).thenReturn("password123");
+        when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
+
+        ModelAndView mv = loginController.userLogin(request, response, session);
+
+        assertEquals("/login/login", mv.getViewName());
+    }
+
+    // 5. ユーザーID null
+    @Test
+    public void testLogin_nullUserId() {
+        when(request.getParameter("userid")).thenReturn(null);
+        when(request.getParameter("password")).thenReturn("password123");
+        when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
+
+        ModelAndView mv = loginController.userLogin(request, response, session);
+
+        assertEquals("/login/login", mv.getViewName());
+    }
+
+    // 6. ユーザーIDが数字のみ
+    @Test
+    public void testLogin_userIdNumericOnly() {
+        when(request.getParameter("userid")).thenReturn("123456");
+        when(request.getParameter("password")).thenReturn("password123");
+        when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
+
+        ModelAndView mv = loginController.userLogin(request, response, session);
+
+        assertEquals("/login/login", mv.getViewName());
+    }
+
+    // 7. ユーザーIDにアンダースコア
+    @Test
+    public void testLogin_userIdWithUnderscore() {
+        when(request.getParameter("userid")).thenReturn("admin_user");
+        when(request.getParameter("password")).thenReturn("password123");
+        when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
+
+        ModelAndView mv = loginController.userLogin(request, response, session);
+
+        assertEquals("/login/login", mv.getViewName());
+    }
+
+    // 8. ユーザーIDが日本語
+    @Test
+    public void testLogin_userIdInJapanese() {
+        when(request.getParameter("userid")).thenReturn("テスト");
+        when(request.getParameter("password")).thenReturn("password123");
+        when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
+
+        ModelAndView mv = loginController.userLogin(request, response, session);
+
+        assertEquals("/login/login", mv.getViewName());
+    }
+
+    // 9. パスワード間違い
+    @Test
+    public void testLogin_wrongPassword() {
+        when(request.getParameter("userid")).thenReturn("testuser");
+        when(request.getParameter("password")).thenReturn("wrongpass");
+        when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
+
+        ModelAndView mv = loginController.userLogin(request, response, session);
+
+        assertEquals("/login/login", mv.getViewName());
+    }
+
+    // 10. 存在しないユーザーID
+    @Test
+    public void testLogin_userNotFound() {
+        when(request.getParameter("userid")).thenReturn("nonexistent");
+        when(request.getParameter("password")).thenReturn("anything");
+        when(userService.getUserByUserIdAndPassword(any(User.class))).thenReturn(null);
+
+        ModelAndView mv = loginController.userLogin(request, response, session);
+
+        assertEquals("/login/login", mv.getViewName());
     }
 }
