@@ -32,13 +32,13 @@ public class LoginControllerTest {
         response = mock(HttpServletResponse.class);
         session = mock(HttpSession.class);
         // リフレクションでUserServiceをセットする
-        try {
-            java.lang.reflect.Field field = LoginController.class.getDeclaredField("userService");
-            field.setAccessible(true);
-            field.set(loginController, userService);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            java.lang.reflect.Field field = LoginController.class.getDeclaredField("userService");
+//            field.setAccessible(true);
+//            field.set(loginController, userService);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     // 1. 正常なログイン
