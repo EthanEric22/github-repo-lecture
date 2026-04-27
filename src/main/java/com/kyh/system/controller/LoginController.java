@@ -49,10 +49,6 @@ public class LoginController {
 		return model;
 	}
 
-	// index.html
-	//	<div class="content">
-	//	    <iframe src="welcome" id="iframe" width="100%" height="100%" frameborder="0"></iframe>
-	//  </div>
 	@RequestMapping(value = "/login/welcome", method = { RequestMethod.POST, RequestMethod.GET })
 	public String welcome() {
 		return "/login/welcome";
