@@ -31,6 +31,7 @@ public class LoginController {
 		return "/login/login";
 	}
 
+	// ユーザーログイン
 	@RequestMapping(value = "/login/userLogin", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView userLogin(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		ModelAndView model = new ModelAndView();
@@ -38,7 +39,7 @@ public class LoginController {
 		user.setUserid(request.getParameter("userid"));
 		user.setPassword(request.getParameter("password"));
 		User result = userService.getUserByUserIdAndPassword(user);
-
+		
 		if (result != null) {
 			session.setAttribute("user", result);
 			model.setViewName("login/index");

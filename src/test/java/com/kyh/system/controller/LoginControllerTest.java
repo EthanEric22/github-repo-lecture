@@ -41,7 +41,7 @@ public class LoginControllerTest {
 //        }
     }
 
-    // 1. 正常なログイン
+    // 1. 正常なログインを作成したテストケース
     @Test
     public void testLogin_successful() {
         when(request.getParameter("userid")).thenReturn("testuser");
