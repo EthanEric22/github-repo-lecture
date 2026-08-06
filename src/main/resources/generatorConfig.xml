@@ -38,7 +38,7 @@
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!-- 生成するテーブル tableNameはデータベース内のテーブル名またはビュー名、domainObjectNameはエンティティクラス名 -->
-		<table tableName="syain_main" domainObjectName="Syain">
+		<table tableName="syain_main" domainObjectName="Syain1">
 			<generatedKey column="syain_id" sqlStatement="PostgreSQL"
 				identity="true" />
 		</table>
